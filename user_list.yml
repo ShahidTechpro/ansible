@@ -1,0 +1,20 @@
+users_list:
+  - username: shahid
+    job: manager
+
+  - username: Irum
+    job: developer
+
+  - username: waseem
+    job: developer
+
+  - username: ezaan
+    job: manager
+
+  - username: sadaf
+    job : developer
+
+group_list:
+  - groupname: hello
+  - groupname: pakistan
+  - groupname: china
