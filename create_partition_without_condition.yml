@@ -1,0 +1,43 @@
+---
+- name: create partition
+  hosts: dev
+  tasks:
+    - name: create disk 
+      parted:
+        device: /dev/sdb
+        number: 1
+        flags: [ lvm ]
+        state: present
+
+    - name: create Logical volume group 
+      lvg:
+        vg: vg1
+        pvs: /dev/sdb1
+      when: ansible_devices.sdb.partiontions.sdb1 is defined
+ 
+
+    - name: create logical volume 
+      lvol:
+        vg: vg1
+        lv: lv1
+        size: 20G
+      when: ansible_devices.lvm.vgs.vg1 is defined and ((ansible_lvm.vgs.vg1.size_g | float) > 20) 
+    
+    - name: send message if volume group is not large enough 
+      debug:
+        msg: not enough space for logical volume 
+             
+
+    - name: create nfs4 filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/vgexam/lvexam
+        
+
+
+    - name: mount device with id
+      mount: 
+        path: /data
+        src: /dev/vgexam/lvexam
+        fstype: ext4
+        state: present
