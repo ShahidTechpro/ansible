@@ -1,0 +1,12 @@
+---
+- name: Schedule a cron job
+  hosts: all
+  tasks:
+    - name: Creates a cron file under /etc/cron.d
+      cron:
+        name: yum autoupdate
+        weekday: "2"
+        minute: "0"
+        hour: "12"
+        user: shahid
+        job: "/bin/echo hello"
