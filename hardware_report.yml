@@ -1,0 +1,46 @@
+---
+- name: download file and update real information of hosts
+  hosts: all
+  tasks:
+    - name: Download file from a file path
+      get_url:
+         url: http://192.168.56.41/report.txt
+         dest: /root/report.txt
+         #mode: '0777'
+         #owner: 'admin'
+      
+    - name: update host information 
+      lineinfile:
+         path: /root/report.txt
+         state: present
+         regexp: '^HOST'
+         line: HOST= {{ ansible_hostname }}
+   
+    - name: update memoryinformation
+      lineinfile:
+         path: /root/report.txt
+         state: present
+         regexp: '^MEMORY'
+         line: MEMORY= {{ ansible_memtotal_mb }}
+
+    - name: update BIOS information
+      lineinfile:
+         path: /root/report.txt
+         state: present
+         regexp: '^BIOS'
+         line: BIOS= {{ ansible_bios_version }}
+
+    - name: update VDA_DISK_SIZE information
+      lineinfile:
+         path: /root/report.txt
+         state: present
+         regexp: '^VDA_DISK_SIZE'
+         line: VDA_DISK_SIZE= {% if ansible_devices.vda is defined %} {{ ansible_devices.vda.size }} {%else%} NONE {%endif%}
+
+
+    - name: update VDB_DISK_SIZE information
+      lineinfile:
+         path: /root/report.txt
+         state: present
+         regexp: '^VDA-DISK_SIZE'
+         line: VDB_DISK_SIZE= {% if ansible_devices.vdb is defined %} {{ ansible_devices.vdb.size }} {%else%} NONE {%endif%}
