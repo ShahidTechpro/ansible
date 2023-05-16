@@ -1,0 +1,48 @@
+---
+- name:  create partition
+  hosts: node4
+  tasks:
+    - name: create PV
+      parted:
+        device: /dev/sdc
+        number: 1
+        flags: [ lvm ]
+        state: present
+
+    - name: create vg
+      lvg:
+        vg: vge
+        pvs: /dev/sdc1
+      when: ansible_devices.sdc.partitions.sdc1 is defined
+
+    - name: create volume
+      lvol:
+        vg: vge
+        lv: lve
+        size: 12g
+      when: ansible_lvm.vgs.vge is defined and ((ansible_lvm.vgs.vge.size_g | float) > 12)
+
+    - name: send message if volume group not large enough
+      debug:
+        msg: Not enough space for logical volume
+      when: ansible_lvm.vgs.vge is defined and ((ansible_lvm.vgs.vge.size_g | float) < 12)
+
+    - name: create similiar volume group
+      lvol:
+        vg: vge
+        lv: lve
+        size: 2g
+      when: ansible_lvm.vgs.vge is defined and ((ansible_lvm.vgs.vge.size_g | float) < 12)
+
+    - name: create filesystem
+      filesystem:
+       fstype: ext4
+        dev: /dev/vge/lve
+      when: ansible_lvm.vgs.vge is defined
+
+#    - name: create mount point
+#      mount:
+#        path: /exam5
+#        src: /dev/vg1/lv1
+#        fstype: ext4
+#        state: mounted
