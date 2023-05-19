@@ -1,0 +1,26 @@
+>> dnf install -y ansible
+>>  mkdir -p /home/catherine/ansible
+>> mkdir -p /home/catherine/ansible/roles
+>> touch /home/catherine/inventory 
+
+>> cd /home/catherine/ansible
+>> cp /etc/ansible/ansible.cfg
+
+>> Create Inventory 
+    vim /home/catherine/ansible/inventory
+   [dev]
+   node1.domain10.example.com
+   [test]
+   node1.domain10.example.com
+   [prod]
+   node3.domain10.example.com
+   node4.domain10.example.com
+   [balancers]
+   node5.domain10.example.com
+   [webservers:children]
+    prod
+
+>> vim ansible.cfg
+[defaults]
+inventory = /home/catherine/ansible/inventory
+roles_path = /home/catherine/ansible/roles
