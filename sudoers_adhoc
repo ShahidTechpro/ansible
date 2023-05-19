@@ -3,6 +3,6 @@
 'ansible all -m lineinfile -a \
  path: /etc/sudoers \
  state: present \
- regexp: '^%shams ALL=' \
- line: '%shams ALL=(ALL) NOPASSWD: ALL' \
+ regexp: '^%admin ALL=' \
+ line: '%admin ALL=(ALL) NOPASSWD: ALL' \
  validate: /usr/sbin/visudo -cf %s '
