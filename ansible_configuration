@@ -1,11 +1,14 @@
+Step-1
 >> dnf install -y ansible
->>  mkdir -p /home/catherine/ansible
->> mkdir -p /home/catherine/ansible/roles
->> touch /home/catherine/inventory 
-
->> cd /home/catherine/ansible
+>>  mkdir -p /home/admin/ansible
+>> mkdir -p /home/admin/ansible/roles
+>> touch /home/admin/inventory 
+#################################
+step-3
+>> cd /home/admin/ansible
 >> cp /etc/ansible/ansible.cfg
-
+##################################
+step-4
 >> Create Inventory 
     vim /home/catherine/ansible/inventory
    [dev]
@@ -19,8 +22,29 @@
    node5.domain10.example.com
    [webservers:children]
     prod
-
+##################################################
+step-5
 >> vim ansible.cfg
 [defaults]
-inventory = /home/catherine/ansible/inventory
-roles_path = /home/catherine/ansible/roles
+inventory = /home/admin/ansible/inventory
+roles_path = /home/admin/ansible/roles
+host_key_checking = False
+remote_user = admin
+
+[privilege_escalation]
+become=True
+become_method=sudo
+become_user=root
+become_ask_pass=False
+######################################
+step-6
+Add user Admin into sudoers 
+>> create yaml in control nide and run 
+- name: Validate the sudoers file before saving
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%Aadmin ALL='
+    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+    validate: /usr/sbin/visudo -cf %s
+###########################################################
