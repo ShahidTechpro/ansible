@@ -48,3 +48,6 @@ Add user Admin into sudoers
     line: '%admin ALL=(ALL) NOPASSWD: ALL'
     validate: /usr/sbin/visudo -cf %s
 ###########################################################
+Verify now 
+ansible all -m ping 
+
