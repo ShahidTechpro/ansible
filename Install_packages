@@ -1,0 +1,27 @@
+Install Packages on dev , prod, and webservers 
+update packages on dev only 
+##############################
+---
+- name: install common packages on dev,prod, webservers
+  hosts: dev,prod,webservers
+  tasks:
+    - name: Install httpd,mod_ssl and  mariaDB
+      yum:
+        name:
+          - httpd
+          - mariadb
+          - mod_ssl
+        state: present
+
+    - name: Install development tools in dev hosts
+      yum:
+        name: "@Development tools"
+        state: present
+      when: "'dev' in group_names"
+
+
+    - name: update development tools on dev hosts
+      yum:
+        name: '*'
+        state: latest
+      when: "'dev' in group_names"
